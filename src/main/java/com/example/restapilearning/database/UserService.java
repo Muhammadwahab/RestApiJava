@@ -1,0 +1,56 @@
+package com.example.restapilearning.database;
+
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
+import javax.persistence.PersistenceContext;
+import javax.transaction.Transactional;
+import java.util.List;
+
+
+public class UserService {
+
+    EntityManagerFactory emf = Persistence.createEntityManagerFactory("default");
+
+
+    private EntityManager entityManager=emf.createEntityManager();
+
+//    @PersistenceContext(unitName = "default",name = "default")
+//     EntityManager entityManager;
+
+
+
+    public void addUser(User user) {
+
+        try{
+
+            entityManager.getTransaction().begin();
+            entityManager.persist(user);
+            entityManager.getTransaction().commit();
+        }catch (Exception exception){
+            entityManager.getTransaction().rollback();
+        }
+    }
+
+
+    @Transactional
+    public List<User> getAllUser() {
+
+        return entityManager.createQuery("SELECT u FROM users u", User.class).getResultList();
+    }
+
+    public User getUserById(Long id) {
+        return entityManager.find(User.class, id);
+    }
+
+    public void updateUser(User book) {
+        entityManager.merge(book);
+    }
+
+    public void deleteUser(Long id) {
+        User book = entityManager.find(User.class, id);
+        if (book != null) {
+            entityManager.remove(book);
+        }
+    }
+}
