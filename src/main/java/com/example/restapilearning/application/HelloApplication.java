@@ -1,5 +1,6 @@
 package com.example.restapilearning.application;
 
+import com.example.restapilearning.CustomExceptionMapper;
 import com.example.restapilearning.middleware.RequestFilter;
 import com.example.restapilearning.middleware.ResponseFilter;
 import org.glassfish.jersey.server.ResourceConfig;
@@ -19,6 +20,8 @@ public class HelloApplication extends ResourceConfig {
         register(RequestFilter.class);
 
         register(ResponseFilter.class);
+
+        register(CustomExceptionMapper.class);
 
 
     }

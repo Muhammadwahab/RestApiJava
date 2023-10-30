@@ -10,5 +10,6 @@ public class RequestFilter implements ContainerRequestFilter {
     @Override
     public void filter(ContainerRequestContext containerRequestContext) throws IOException {
         containerRequestContext.getHeaders();
+
     }
 }

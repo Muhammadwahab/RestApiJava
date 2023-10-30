@@ -21,13 +21,21 @@ public class ResponseFilter implements ContainerResponseFilter {
             throws IOException {
         // Perform actions on the response, e.g., modify the entity
 
-        if (responseContext.getStatus()== Response.Status.NOT_FOUND.getStatusCode()){
-            Gson gson=new GsonBuilder().serializeNulls().create();
+        if (responseContext.getStatus() == Response.Status.NOT_FOUND.getStatusCode()) {
+            Gson gson = new GsonBuilder().serializeNulls().create();
             responseContext.getHeaders().putSingle("Content-Type", MediaType.APPLICATION_JSON);
-            ErrorResponse errorResponse=new ErrorResponse("api end point not found","this api is not listed in our server");
-            ApiResponse<ErrorResponse> response = ApiResponse.error(responseContext.getStatus(), "Resource not found",errorResponse);
-            String json=gson.toJson(response);
+            ErrorResponse errorResponse = new ErrorResponse("api end point not found", "this api is not listed in our server");
+            ApiResponse<ErrorResponse> response = ApiResponse.error(responseContext.getStatus(), "Resource not found", errorResponse);
+            String json = gson.toJson(response);
+            responseContext.setEntity(json);
+        } else if (responseContext.getStatus() == Response.Status.INTERNAL_SERVER_ERROR.getStatusCode()) {
+            Gson gson = new GsonBuilder().serializeNulls().create();
+            responseContext.getHeaders().putSingle("Content-Type", MediaType.APPLICATION_JSON);
+            ErrorResponse errorResponse = new ErrorResponse("Internal Server Error", responseContext.getEntity().toString());
+            ApiResponse<ErrorResponse> response = ApiResponse.error(responseContext.getStatus(), "Internal Server Error", errorResponse);
+            String json = gson.toJson(response);
             responseContext.setEntity(json);
         }
     }
+
 }

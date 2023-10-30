@@ -5,6 +5,7 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
+import javax.ws.rs.InternalServerErrorException;
 import java.util.List;
 
 
@@ -20,16 +21,21 @@ public class UserService {
 
 
 
-    public void addUser(User user) {
+    public User addUser(User user) {
 
-        try{
 
+        try {
             entityManager.getTransaction().begin();
             entityManager.persist(user);
             entityManager.getTransaction().commit();
-        }catch (Exception exception){
-            entityManager.getTransaction().rollback();
+        }catch (Exception e)
+        {
+            throw new InternalServerErrorException("Internal Server Error");
         }
+
+
+
+        return user;
     }
 
 
