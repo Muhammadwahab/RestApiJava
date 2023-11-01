@@ -1,6 +1,7 @@
 package com.example.restapilearning.database;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -18,7 +19,6 @@ public class User {
     private Long id;
 
     private String name;
-
 
 
     private String jwt;

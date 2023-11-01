@@ -3,9 +3,13 @@ package com.example.restapilearning.middleware;
 import com.example.restapilearning.annotations.NamingSecured;
 import com.example.restapilearning.annotations.Secured;
 import com.example.restapilearning.database.User;
+import com.example.restapilearning.security.CustomSecurityContext;
+import com.google.gson.Gson;
 import io.jsonwebtoken.*;
 
+import javax.annotation.Priority;
 import javax.ws.rs.InternalServerErrorException;
+import javax.ws.rs.Priorities;
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerRequestFilter;
 import javax.ws.rs.core.HttpHeaders;
@@ -16,6 +20,7 @@ import java.util.logging.Logger;
 
 @Provider
 @NamingSecured
+@Priority(Priorities.AUTHENTICATION)
 public class RequestFilter implements ContainerRequestFilter {
 
 
@@ -34,8 +39,11 @@ public class RequestFilter implements ContainerRequestFilter {
                 Jwt<Header, Claims> claimsJwt = Jwts.parser().unsecured().build().parseUnsecuredClaims(tokenValue)
                         ;
 
-                User user= (User) claimsJwt.getPayload().get("user");
-                containerRequestContext.abortWith(Response.status(200).entity("token is "+tokenValue).build());
+                String json= claimsJwt.getPayload().get("user").toString();
+                Gson gson= new Gson();
+                User user=gson.fromJson(json,User.class);
+                containerRequestContext.setSecurityContext(new CustomSecurityContext(user));
+//                containerRequestContext.abortWith(Response.status(200).entity("token is "+tokenValue).build());
 
             }
             else{
@@ -43,6 +51,10 @@ public class RequestFilter implements ContainerRequestFilter {
             }
          //   System.out.println("token is "+token);
 
+
+        }catch (ExpiredJwtException exception){
+
+            throw new InternalServerErrorException("Jwt token expired");
 
         }catch (Exception exception){
 

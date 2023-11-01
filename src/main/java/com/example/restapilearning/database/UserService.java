@@ -3,7 +3,6 @@ package com.example.restapilearning.database;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
-import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
 import javax.ws.rs.InternalServerErrorException;
 import java.util.List;
@@ -49,8 +48,19 @@ public class UserService {
         return entityManager.find(User.class, id);
     }
 
-    public void updateUser(User book) {
-        entityManager.merge(book);
+    public User updateUser(User user) {
+
+        try{
+            entityManager.getTransaction().begin();
+             user=entityManager.merge(user);
+            entityManager.getTransaction().commit();
+        }catch (Exception e){
+            entityManager.getTransaction().rollback();
+            throw new InternalServerErrorException(e);
+        }
+
+
+        return user;
     }
 
     public void deleteUser(Long id) {
