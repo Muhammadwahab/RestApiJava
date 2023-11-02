@@ -25,7 +25,8 @@ public class CustomSecurityContext implements SecurityContext {
     @Override
     public boolean isUserInRole(String role) {
         // Implement your role-checking logic based on the roles of the User object
-        return true;
+
+        return role.equals("admin");
     }
 
     @Override
@@ -43,4 +44,6 @@ public class CustomSecurityContext implements SecurityContext {
     public User getUser() {
         return user;
     }
+
+
 }

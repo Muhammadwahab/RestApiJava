@@ -44,6 +44,14 @@ public class ResponseFilter implements ContainerResponseFilter {
             String json = gson.toJson(response);
             responseContext.setEntity(json);
         }
+        else if (responseContext.getStatus() == Response.Status.FORBIDDEN.getStatusCode()) {
+            Gson gson = new GsonBuilder().serializeNulls().create();
+            responseContext.getHeaders().putSingle("Content-Type", MediaType.APPLICATION_JSON);
+            ErrorResponse errorResponse = new ErrorResponse("Forebidin","The server understood the request but refuses to authorize it.");
+            ApiResponse<ErrorResponse> response = ApiResponse.error(responseContext.getStatus(), "Forebidin", errorResponse);
+            String json = gson.toJson(response);
+            responseContext.setEntity(json);
+        }
     }
 
 }

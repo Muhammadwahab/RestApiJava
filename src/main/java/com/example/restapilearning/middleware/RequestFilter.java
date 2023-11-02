@@ -1,7 +1,6 @@
 package com.example.restapilearning.middleware;
 
 import com.example.restapilearning.annotations.NamingSecured;
-import com.example.restapilearning.annotations.Secured;
 import com.example.restapilearning.database.User;
 import com.example.restapilearning.security.CustomSecurityContext;
 import com.google.gson.Gson;
@@ -43,7 +42,6 @@ public class RequestFilter implements ContainerRequestFilter {
                 Gson gson= new Gson();
                 User user=gson.fromJson(json,User.class);
                 containerRequestContext.setSecurityContext(new CustomSecurityContext(user));
-//                containerRequestContext.abortWith(Response.status(200).entity("token is "+tokenValue).build());
 
             }
             else{
@@ -55,6 +53,15 @@ public class RequestFilter implements ContainerRequestFilter {
         }catch (ExpiredJwtException exception){
 
             throw new InternalServerErrorException("Jwt token expired");
+
+        }catch (UnsupportedJwtException exception){
+
+            throw new InternalServerErrorException("Invalid Token Exception");
+
+        }
+        catch (MalformedJwtException exception){
+
+            throw new InternalServerErrorException("MalformedJwtException");
 
         }catch (Exception exception){
 

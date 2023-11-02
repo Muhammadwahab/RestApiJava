@@ -11,18 +11,16 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 
-import javax.annotation.security.PermitAll;
+import javax.annotation.security.RolesAllowed;
 import javax.transaction.Transactional;
 import javax.ws.rs.*;
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.core.SecurityContext;
 import java.security.Key;
 import java.time.Instant;
 import java.time.ZoneId;
-import java.time.temporal.ChronoUnit;
 import java.util.Date;
 import java.util.List;
 
@@ -37,7 +35,6 @@ public class UserResource {
         UserService userService=new UserService();
         Gson gson=new GsonBuilder().serializeNulls().create();
         List<User> userServiceJson= userService.getAllUser();
-//        List<User> userServiceJson= getAllUser();
         String jsonResponse= gson.toJson(ApiResponse.success(userServiceJson));
 
         return Response.ok(jsonResponse).build();
@@ -67,6 +64,7 @@ public class UserResource {
     @GET
     @Produces({MediaType.APPLICATION_JSON})
     @Path("/details")
+    @RolesAllowed({"admin","user"})
     @NamingSecured
     public Response getUserDetail(@Context ContainerRequestContext containerRequestContext) {
         try {

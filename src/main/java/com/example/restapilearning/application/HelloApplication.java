@@ -6,10 +6,13 @@ import com.example.restapilearning.middleware.RequestFilter;
 import com.example.restapilearning.middleware.ResponseFilter;
 import com.example.restapilearning.resources.UserResource;
 import org.glassfish.jersey.server.ResourceConfig;
+import org.glassfish.jersey.server.filter.RolesAllowedDynamicFeature;
 
+import javax.annotation.security.DeclareRoles;
 import javax.ws.rs.ApplicationPath;
 
 @ApplicationPath("/api")
+@DeclareRoles({"admin", "user"})
 public class HelloApplication extends ResourceConfig {
 
 
@@ -23,6 +26,9 @@ public class HelloApplication extends ResourceConfig {
         register(RequestFilter.class);
 
         register(ResponseFilter.class);
+
+        register(RolesAllowedDynamicFeature.class);
+
 
         register(CustomExceptionMapper.class);
 
