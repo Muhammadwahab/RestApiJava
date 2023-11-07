@@ -1,5 +1,7 @@
 package com.example.restapilearning.database;
 
+import javax.ejb.Stateless;
+import javax.enterprise.context.RequestScoped;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
@@ -8,6 +10,8 @@ import javax.ws.rs.InternalServerErrorException;
 import java.util.List;
 
 
+@RequestScoped
+@Stateless
 public class UserService {
 
     EntityManagerFactory emf = Persistence.createEntityManagerFactory("default");

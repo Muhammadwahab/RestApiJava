@@ -12,6 +12,7 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 
 import javax.annotation.security.RolesAllowed;
+import javax.inject.Inject;
 import javax.transaction.Transactional;
 import javax.ws.rs.*;
 import javax.ws.rs.container.ContainerRequestContext;
@@ -28,11 +29,14 @@ import java.util.List;
 public class UserResource {
 
 
+
+    @Inject
+    UserService userService;
+
     @GET
     @Produces({MediaType.APPLICATION_JSON})
     @NamingSecured
     public Response getAllUsers() {
-        UserService userService=new UserService();
         Gson gson=new GsonBuilder().serializeNulls().create();
         List<User> userServiceJson= userService.getAllUser();
         String jsonResponse= gson.toJson(ApiResponse.success(userServiceJson));
@@ -46,7 +50,6 @@ public class UserResource {
     @Path("/create")
     @Transactional
     public Response addUser(User user) {
-        UserService userService=new UserService();
         Gson gson=new GsonBuilder().serializeNulls().create();
         user=userService.addUser(user);
         String token = Jwts.builder()
@@ -68,7 +71,6 @@ public class UserResource {
     @NamingSecured
     public Response getUserDetail(@Context ContainerRequestContext containerRequestContext) {
         try {
-            UserService userService=new UserService();
             CustomSecurityContext customSecurityContext= (CustomSecurityContext) containerRequestContext.getSecurityContext();
             User user=userService.getUserById(customSecurityContext.getUser().getId());
             Gson gson=new GsonBuilder().serializeNulls().create();

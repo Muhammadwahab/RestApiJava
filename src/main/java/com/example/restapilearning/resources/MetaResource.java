@@ -1,11 +1,14 @@
 package com.example.restapilearning.resources;
 
+import com.example.restapilearning.database.CalculatorService;
 import com.example.restapilearning.responses.ApiResponse;
 import com.example.restapilearning.configurations.AppConfig;
 import com.example.restapilearning.responses.MetaResponse;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
