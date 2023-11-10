@@ -5,6 +5,7 @@ import javax.enterprise.context.RequestScoped;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
+import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
 import javax.ws.rs.InternalServerErrorException;
 import java.util.List;
@@ -13,16 +14,17 @@ import java.util.List;
 @Stateless
 public class UserService {
 
-    EntityManagerFactory emf = Persistence.createEntityManagerFactory("default");
+//    EntityManagerFactory emf = Persistence.createEntityManagerFactory("default");
 
 
-    private EntityManager entityManager=emf.createEntityManager();
+//    private EntityManager entityManager=emf.createEntityManager();
 
-//    @PersistenceContext(unitName = "default",name = "default")
-//     EntityManager entityManager;
+    @PersistenceContext(unitName = "default")
+     EntityManager entityManager;
 
 
 
+    @Transactional
     public User addUser(User user) {
 
 
@@ -51,6 +53,7 @@ public class UserService {
         return entityManager.find(User.class, id);
     }
 
+   @Transactional
     public User updateUser(User user) {
 
         try{

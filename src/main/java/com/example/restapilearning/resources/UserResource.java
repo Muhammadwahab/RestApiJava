@@ -12,6 +12,7 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 
 import javax.annotation.security.RolesAllowed;
+import javax.ejb.EJB;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 import javax.ws.rs.*;
@@ -30,7 +31,7 @@ public class UserResource {
 
 
 
-    @Inject
+    @EJB
     UserService userService;
 
     @GET
@@ -48,7 +49,6 @@ public class UserResource {
     @Produces({MediaType.APPLICATION_JSON})
     @Consumes({MediaType.APPLICATION_JSON})
     @Path("/create")
-    @Transactional
     public Response addUser(User user) {
         Gson gson=new GsonBuilder().serializeNulls().create();
         user=userService.addUser(user);
