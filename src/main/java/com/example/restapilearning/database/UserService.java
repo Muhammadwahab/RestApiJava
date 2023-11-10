@@ -10,7 +10,6 @@ import javax.ws.rs.InternalServerErrorException;
 import java.util.List;
 
 
-@RequestScoped
 @Stateless
 public class UserService {
 

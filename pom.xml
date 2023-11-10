@@ -110,6 +110,14 @@
           <version>8.0</version>
       </dependency>
 
+
+      <dependency>
+          <groupId>javax.ws.rs</groupId>
+          <artifactId>javax.ws.rs-api</artifactId>
+          <version>2.1</version>
+          <!-- Use the version you need -->
+      </dependency>
+
   </dependencies>
 
   <build>
