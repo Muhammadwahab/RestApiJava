@@ -1,10 +1,7 @@
 package com.example.restapilearning.database;
 
 import javax.ejb.Stateless;
-import javax.enterprise.context.RequestScoped;
 import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
 import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
 import javax.ws.rs.InternalServerErrorException;
@@ -27,7 +24,6 @@ public class UserService {
     @Transactional
     public User addUser(User user) {
 
-
         try {
             entityManager.getTransaction().begin();
             entityManager.persist(user);
@@ -36,17 +32,20 @@ public class UserService {
         {
             throw new InternalServerErrorException("Internal Server Error");
         }
-
-
-
         return user;
     }
 
 
     @Transactional
-    public List<User> getAllUser() {
+    public List<User> getAllUser(int page, int pageSize) {
+        int start = (page - 1) * pageSize;
 
-        return entityManager.createQuery("SELECT u FROM users u", User.class).getResultList();
+        return entityManager.createQuery("SELECT u FROM users u", User.class).setFirstResult(start).setMaxResults(pageSize).getResultList();
+    }
+
+    public long getItemCount() {
+        return entityManager.createQuery("SELECT COUNT(u) FROM users u", Long.class)
+                .getSingleResult();
     }
 
     public User getUserById(Long id) {
