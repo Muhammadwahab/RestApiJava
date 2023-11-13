@@ -3,11 +3,10 @@ package com.example.restapilearning.database;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import javax.xml.bind.annotation.XmlRootElement;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity(name = "users")
 @XmlRootElement
@@ -22,6 +21,14 @@ public class User {
 
 
     private String jwt;
+
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinTable(
+            name = "user_roles",
+            joinColumns = @JoinColumn(name = "user_id",columnDefinition = "int"),
+            inverseJoinColumns = @JoinColumn(name = "role_id",columnDefinition = "int")
+    )
+    private Set<Roles> roles = new HashSet<>();
 
 
     public Long getId() {

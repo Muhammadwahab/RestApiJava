@@ -9,6 +9,7 @@
         <jta-data-source>jdbc/localdatasource</jta-data-source>
 
         <class>com.example.restapilearning.database.User</class>
+        <class>com.example.restapilearning.database.Roles</class>
 
 
 
@@ -19,6 +20,12 @@
             <property name="javax.persistence.jdbc.password" value="123456"/>
             <property name="hibernate.transaction.jta.platform" value="org.hibernate.service.jta.platform.internal.SunOneJtaPlatform"/>
 
+
+            <!-- Hibernate specific settings -->
+            <property name="hibernate.dialect" value="org.hibernate.dialect.MySQL55Dialect"/>
+            <property name="hibernate.show_sql" value="true"/>
+            <property name="hibernate.format_sql" value="true"/>
+            <property name="hibernate.hbm2ddl.auto" value="update"/>
         </properties>
     </persistence-unit>
 
