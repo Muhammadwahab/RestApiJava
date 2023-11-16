@@ -22,13 +22,13 @@ public class User {
 
     private String jwt;
 
-    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @ManyToMany(fetch = FetchType.EAGER ,cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(
             name = "user_roles",
             joinColumns = @JoinColumn(name = "user_id",columnDefinition = "int"),
             inverseJoinColumns = @JoinColumn(name = "role_id",columnDefinition = "int")
     )
-    private Set<Roles> roles = new HashSet<>();
+    private  Set<Roles> roles = new HashSet<>();
 
 
     public Long getId() {
@@ -53,5 +53,13 @@ public class User {
 
     public void setJwt(String jwt) {
         this.jwt = jwt;
+    }
+
+    public Set<Roles> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(Set<Roles> roles) {
+        this.roles = roles;
     }
 }

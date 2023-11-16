@@ -48,6 +48,7 @@ public class UserService {
                 .getSingleResult();
     }
 
+    @Transactional
     public User getUserById(Long id) {
         return entityManager.find(User.class, id);
     }

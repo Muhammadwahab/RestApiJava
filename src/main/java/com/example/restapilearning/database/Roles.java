@@ -1,10 +1,15 @@
 package com.example.restapilearning.database;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import javax.persistence.*;
+import javax.xml.bind.annotation.XmlRootElement;
 import java.util.HashSet;
 import java.util.Set;
 
 @Entity
+@XmlRootElement
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Roles {
 
     @Id
@@ -19,7 +24,7 @@ public class Roles {
     }
 
     @ManyToMany(mappedBy = "roles")
-    private Set<User> users = new HashSet<>();
+    private transient Set<User> users = new HashSet<>();
 
     public Roles(String roleName) {
         this.roleName = roleName;
@@ -41,5 +46,13 @@ public class Roles {
 
     public void setRoleName(String roleName) {
         this.roleName = roleName;
+    }
+
+    public Set<User> getUsers() {
+        return users;
+    }
+
+    public void setUsers(Set<User> users) {
+        this.users = users;
     }
 }

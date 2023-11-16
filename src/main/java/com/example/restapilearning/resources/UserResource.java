@@ -22,6 +22,7 @@ import javax.ws.rs.core.Response;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 
 @Path("/users")
@@ -31,6 +32,9 @@ public class UserResource {
 
     @EJB
     UserService userService;
+
+    @EJB
+    RoleService roleService;
 
     @GET
     @Produces({MediaType.APPLICATION_JSON})
@@ -63,6 +67,7 @@ public class UserResource {
     @Path("/create")
     public Response addUser(User user) {
         Gson gson=new GsonBuilder().serializeNulls().create();
+        Roles role=roleService.getRole("ADMIN");
         user=userService.addUser(user);
         String token = Jwts.builder()
                 .claim("user",user)
@@ -70,7 +75,11 @@ public class UserResource {
                 .expiration(Date.from(Instant.now().atZone(ZoneId.systemDefault()).plusYears(2).toInstant())) // Set expiration to 2 years from now
                 .compact();
         user.setJwt(token);
+        user.getRoles().add(role);
+        role.setUsers(new HashSet<User>());
+        role.getUsers().add(user);
         user=userService.updateUser(user);
+        role=roleService.updateRoles(role);
         String jsonResponse= gson.toJson(ApiResponse.success(user));
         return Response.ok(jsonResponse).build();
     }

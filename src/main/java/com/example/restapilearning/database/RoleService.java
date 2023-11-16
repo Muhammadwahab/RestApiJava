@@ -4,6 +4,7 @@ import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
+import javax.ws.rs.InternalServerErrorException;
 import java.util.List;
 
 @Stateless
@@ -28,5 +29,53 @@ public class RoleService {
         return roles;
     }
 
-    // Additional methods for updating and deleting roles if needed
+
+
+    @Transactional
+    public Roles getOrCreateRole(String roleName) {
+        Roles role = entityManager.createQuery("SELECT r FROM Roles r WHERE r.roleName = :roleName", Roles.class)
+                .setParameter("roleName", roleName)
+                .getResultList()
+                .stream()
+                .findFirst()
+                .orElse(null);
+
+        if (role == null) {
+            role = new Roles(roleName);
+            role.setRoleName(roleName);
+            createRole(role);
+//            entityManager.persist(role);
+        }
+
+        return role;
+    }
+
+
+
+    @Transactional
+    public Roles updateRoles(Roles roles) {
+
+        try{
+            entityManager.getTransaction().begin();
+            roles=entityManager.merge(roles);
+            entityManager.getTransaction().commit();
+        }catch (Exception e){
+            entityManager.getTransaction().rollback();
+            throw new InternalServerErrorException(e);
+        }
+
+
+        return roles;
+    }
+    @Transactional
+    public Roles getRole(String roleName) {
+        Roles role = entityManager.createQuery("SELECT r FROM Roles r WHERE r.roleName = :roleName", Roles.class)
+                .setParameter("roleName", roleName)
+                .getResultList()
+                .stream()
+                .findFirst()
+                .orElse(null);
+
+        return role;
+    }
 }
