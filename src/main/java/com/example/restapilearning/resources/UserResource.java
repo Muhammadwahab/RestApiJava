@@ -14,6 +14,7 @@ import io.jsonwebtoken.Jwts;
 
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.EJB;
+import javax.validation.Valid;
 import javax.ws.rs.*;
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.core.Context;
@@ -65,7 +66,7 @@ public class UserResource {
     @Produces({MediaType.APPLICATION_JSON})
     @Consumes({MediaType.APPLICATION_JSON})
     @Path("/create")
-    public Response addUser(User user) {
+    public Response addUser(@Valid User user) {
         Gson gson=new GsonBuilder().serializeNulls().create();
         Roles role=roleService.getRole("ADMIN");
         user=userService.addUser(user);

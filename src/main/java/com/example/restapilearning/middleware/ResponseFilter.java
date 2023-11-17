@@ -36,6 +36,14 @@ public class ResponseFilter implements ContainerResponseFilter {
             String json = gson.toJson(response);
             responseContext.setEntity(json);
         }
+        else if (responseContext.getStatus() == Response.Status.BAD_REQUEST.getStatusCode()) {
+            Gson gson = new GsonBuilder().serializeNulls().create();
+            responseContext.getHeaders().putSingle("Content-Type", MediaType.APPLICATION_JSON);
+            ErrorResponse errorResponse = new ErrorResponse("Bad Request", responseContext.getEntity().toString());
+            ApiResponse<ErrorResponse> response = ApiResponse.error(responseContext.getStatus(), "Bad Request", errorResponse);
+            String json = gson.toJson(response);
+            responseContext.setEntity(json);
+        }
         else if (responseContext.getStatus() == Response.Status.UNAUTHORIZED.getStatusCode()) {
             Gson gson = new GsonBuilder().serializeNulls().create();
             responseContext.getHeaders().putSingle("Content-Type", MediaType.APPLICATION_JSON);

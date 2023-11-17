@@ -1,9 +1,11 @@
 package com.example.restapilearning.application;
 
+import com.example.restapilearning.ConstraintViolationExceptionMapper;
 import com.example.restapilearning.CustomExceptionMapper;
 import com.example.restapilearning.middleware.RequestFilter;
 import com.example.restapilearning.middleware.ResponseFilter;
 import com.example.restapilearning.resources.MetaResource;
+import com.example.restapilearning.resources.PushNotificaitonResource;
 import com.example.restapilearning.resources.UserResource;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.server.filter.RolesAllowedDynamicFeature;
@@ -24,6 +26,7 @@ public class HelloApplication extends ResourceConfig {
         // Register your filter classes
         register(UserResource.class);
         register(MetaResource.class);
+        register(PushNotificaitonResource.class);
         register(RequestFilter.class);
 
         register(ResponseFilter.class);
@@ -32,6 +35,7 @@ public class HelloApplication extends ResourceConfig {
 
 
         register(CustomExceptionMapper.class);
+        register(ConstraintViolationExceptionMapper.class);
 
 
     }
