@@ -1,5 +1,7 @@
 package com.example.restapilearning.resources;
 
+import com.cloudinary.Cloudinary;
+import com.cloudinary.utils.ObjectUtils;
 import com.example.restapilearning.annotations.NamingSecured;
 import com.example.restapilearning.database.Roles;
 import com.example.restapilearning.database.RoleService;
@@ -11,6 +13,7 @@ import com.example.restapilearning.security.CustomSecurityContext;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import io.jsonwebtoken.Jwts;
+import org.glassfish.jersey.media.multipart.FormDataParam;
 
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.EJB;
@@ -20,11 +23,10 @@ import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.io.*;
 import java.time.Instant;
 import java.time.ZoneId;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
+import java.util.*;
 
 @Path("/users")
 public class UserResource {
@@ -104,4 +106,106 @@ public class UserResource {
             throw new InternalServerErrorException(e);
         }
     }
+
+
+    @POST
+    @Produces({MediaType.APPLICATION_JSON})
+    @Consumes(MediaType.MULTIPART_FORM_DATA)
+    @Path("/upload")
+    @RolesAllowed({"admin","user"})
+    @NamingSecured
+    public Response uploadImage( @FormDataParam("file") InputStream fileInputStream) throws IOException {
+        Gson gson=new GsonBuilder().serializeNulls().create();
+
+
+        Cloudinary cloudinary = new Cloudinary(ObjectUtils.asMap(
+                "cloud_name", "dpiluws3z",
+                "api_key", "185872825672138",
+                "api_secret", "VO27563L97j6HHg2iKSPOSaavx8"));
+
+
+
+        String envValue = System.getProperty("IMAGE_FOLDER");
+
+        String base64=convertInputStreamToBase64(fileInputStream);
+
+        byte[] imageBytes = Base64.getDecoder().decode(base64);
+
+
+
+
+      //  File outputFile = convertInputStreamToFile(fileInputStream,envValue+"wahab.png");
+
+
+        Map uploadResult = cloudinary.uploader().
+                upload(imageBytes, ObjectUtils.emptyMap());
+
+
+
+        // Process the Cloudinary upload result as needed
+        String publicUrl = (String) uploadResult.get("secure_url");
+
+        String jsonResponse= gson.toJson(ApiResponse.success(publicUrl));
+        return Response.ok(jsonResponse).build();
+    }
+
+    public static String convertInputStreamToBase64(InputStream inputStream) throws IOException {
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        byte[] buffer = new byte[1024];
+        int bytesRead;
+
+        while ((bytesRead = inputStream.read(buffer)) != -1) {
+            outputStream.write(buffer, 0, bytesRead);
+        }
+
+        byte[] data = outputStream.toByteArray();
+        byte[] base64Encoded = Base64.getEncoder().encode(data);
+
+        String dataa= new String(base64Encoded);
+        System.out.println("base 64 is "+dataa);
+        return dataa;
+
+    }
+
+    public static File convertInputStreamToFile(InputStream inputStream, String outputPath) throws IOException {
+        File outputFile = new File(outputPath);
+        try (OutputStream outputStream = new FileOutputStream(outputFile)) {
+            byte[] buffer = new byte[1024];
+            int bytesRead;
+
+            while ((bytesRead = inputStream.read(buffer)) != -1) {
+                outputStream.write(buffer, 0, bytesRead);
+            }
+        }
+
+        return outputFile;
+    }
+
+
+    public static File convertInputStreamToFileInMemory(InputStream inputStream, String envValue) throws IOException {
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        byte[] buffer = new byte[1024];
+        int bytesRead;
+
+        while ((bytesRead = inputStream.read(buffer)) != -1) {
+            outputStream.write(buffer, 0, bytesRead);
+        }
+
+        byte[] data = outputStream.toByteArray();
+        return new ByteArrayFile(data, envValue+"wahab.png");
+    }
+
+    private static class ByteArrayFile extends File {
+        private final byte[] data;
+
+        public ByteArrayFile(byte[] data, String name) {
+            super(name);
+            this.data = data;
+        }
+
+        public byte[] getData() {
+            return data;
+        }
+    }
+
 }

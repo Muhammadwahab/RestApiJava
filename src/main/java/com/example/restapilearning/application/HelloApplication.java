@@ -7,6 +7,7 @@ import com.example.restapilearning.middleware.ResponseFilter;
 import com.example.restapilearning.resources.MetaResource;
 import com.example.restapilearning.resources.PushNotificaitonResource;
 import com.example.restapilearning.resources.UserResource;
+import org.glassfish.jersey.media.multipart.MultiPartFeature;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.server.filter.RolesAllowedDynamicFeature;
 
@@ -28,6 +29,9 @@ public class HelloApplication extends ResourceConfig {
         register(MetaResource.class);
         register(PushNotificaitonResource.class);
         register(RequestFilter.class);
+
+        register(MultiPartFeature.class); // Register MultiPartFeature
+
 
         register(ResponseFilter.class);
 
