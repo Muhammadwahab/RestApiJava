@@ -20,7 +20,6 @@ public class ResponseFilter implements ContainerResponseFilter {
     public void filter(ContainerRequestContext requestContext, ContainerResponseContext responseContext)
             throws IOException {
         // Perform actions on the response, e.g., modify the entity
-
         if (responseContext.getStatus() == Response.Status.NOT_FOUND.getStatusCode()) {
             Gson gson = new GsonBuilder().serializeNulls().create();
             responseContext.getHeaders().putSingle("Content-Type", MediaType.APPLICATION_JSON);

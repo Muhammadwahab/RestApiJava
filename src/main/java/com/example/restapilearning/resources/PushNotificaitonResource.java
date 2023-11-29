@@ -1,5 +1,7 @@
 package com.example.restapilearning.resources;
 
+import com.example.restapilearning.annotations.NamingSecured;
+import com.example.restapilearning.annotations.Secured;
 import com.example.restapilearning.responses.ApiResponse;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.firebase.FirebaseApp;
@@ -19,6 +21,7 @@ import javax.ws.rs.core.Response;
 import java.io.FileInputStream;
 import java.io.IOException;
 
+@NamingSecured
 @Path("/notification")
 public class PushNotificaitonResource {
 

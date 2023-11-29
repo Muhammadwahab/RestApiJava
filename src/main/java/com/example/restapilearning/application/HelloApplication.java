@@ -30,14 +30,10 @@ public class HelloApplication extends ResourceConfig {
         register(PushNotificaitonResource.class);
         register(RequestFilter.class);
 
+
         register(MultiPartFeature.class); // Register MultiPartFeature
-
-
         register(ResponseFilter.class);
-
         register(RolesAllowedDynamicFeature.class);
-
-
         register(CustomExceptionMapper.class);
         register(ConstraintViolationExceptionMapper.class);
 
