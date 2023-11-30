@@ -19,7 +19,7 @@ import java.util.logging.Logger;
 
 @Provider
 @NamingSecured
-@Priority(Priorities.USER)
+@Priority(Priorities.AUTHENTICATION)
 public class RequestFilter implements ContainerRequestFilter {
 
 

@@ -2,6 +2,7 @@ package com.example.restapilearning.application;
 
 import com.example.restapilearning.ConstraintViolationExceptionMapper;
 import com.example.restapilearning.CustomExceptionMapper;
+import com.example.restapilearning.middleware.LoggedFilter;
 import com.example.restapilearning.middleware.RequestFilter;
 import com.example.restapilearning.middleware.ResponseFilter;
 import com.example.restapilearning.resources.MetaResource;
@@ -33,6 +34,7 @@ public class HelloApplication extends ResourceConfig {
 
         register(MultiPartFeature.class); // Register MultiPartFeature
         register(ResponseFilter.class);
+        register(LoggedFilter.class);
         register(RolesAllowedDynamicFeature.class);
         register(CustomExceptionMapper.class);
         register(ConstraintViolationExceptionMapper.class);

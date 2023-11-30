@@ -1,10 +1,13 @@
 package com.example.restapilearning.middleware;
 
+import com.example.restapilearning.database.ApiRequest;
+import com.example.restapilearning.database.LogService;
 import com.example.restapilearning.responses.ApiResponse;
 import com.example.restapilearning.responses.ErrorResponse;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import javax.ejb.EJB;
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerResponseContext;
 import javax.ws.rs.container.ContainerResponseFilter;
@@ -15,6 +18,10 @@ import java.io.IOException;
 
 @Provider
 public class ResponseFilter implements ContainerResponseFilter {
+
+
+    @EJB
+    LogService logService;
 
     @Override
     public void filter(ContainerRequestContext requestContext, ContainerResponseContext responseContext)
@@ -59,6 +66,16 @@ public class ResponseFilter implements ContainerResponseFilter {
             String json = gson.toJson(response);
             responseContext.setEntity(json);
         }
+
+        ApiRequest apiRequest=new ApiRequest();
+        apiRequest.setRequestUrl(requestContext.getUriInfo().getAbsolutePath().getPath());
+        apiRequest.setRequestMethod(requestContext.getMethod());
+        apiRequest.setRequestHeaders(requestContext.getProperty("header").toString());
+        apiRequest.setRequestBody(requestContext.getProperty("body").toString());
+        apiRequest.setResponseStatusCode(responseContext.getStatus());
+        apiRequest.setResponseBody(responseContext.getEntity().toString());
+
+        logService.addLogged(apiRequest);
     }
 
 }
