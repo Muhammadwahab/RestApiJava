@@ -134,11 +134,11 @@ public class UserResource {
 
 
 
-        File outputFile = convertInputStreamToFileInMemory(fileInputStream,envValue);
+      //  File outputFile = convertInputStreamToFile(fileInputStream,envValue+"wahab.png");
 
 
         Map uploadResult = cloudinary.uploader().
-                upload(outputFile, ObjectUtils.emptyMap());
+                upload(imageBytes, ObjectUtils.emptyMap());
 
 
 

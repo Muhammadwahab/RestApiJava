@@ -2,6 +2,12 @@ package com.example.restapilearning.middleware;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.io.input.AutoCloseInputStream;
+import org.apache.commons.io.input.CloseShieldInputStream;
+import org.apache.http.client.utils.URIUtils;
+import org.conscrypt.io.IoUtils;
+import org.glassfish.jersey.message.internal.ReaderWriter;
 
 import javax.annotation.Priority;
 import javax.ws.rs.container.ContainerRequestContext;
@@ -27,6 +33,16 @@ public class LoggedFilter implements ContainerRequestFilter {
             e.printStackTrace(); // Handle the exception according to your application's needs
             return "";
         }
+    }
+
+    private byte[] readInputStreamForByte(InputStream inputStream) throws IOException {
+        ByteArrayOutputStream result = new ByteArrayOutputStream();
+        byte[] buffer = new byte[1024];
+        int length;
+        while ((length = inputStream.read(buffer)) != -1) {
+            result.write(buffer, 0, length);
+        }
+        return result.toByteArray();
     }
 
 
@@ -57,11 +73,25 @@ public class LoggedFilter implements ContainerRequestFilter {
         requestContext.setProperty("header", headers);
 
         if (requestContext.hasEntity()) {
-            System.out.println("Request contains a request body.");
-            String requestBody = readInputStream(inputStream);
-            requestContext.setEntityStream(new ByteArrayInputStream(requestBody.getBytes(StandardCharsets.UTF_8)));
-            requestContext.setProperty("body", requestBody);
-            requestContext.setEntityStream(new ByteArrayInputStream(requestBody.getBytes(StandardCharsets.UTF_8)));
+
+//            InputStream inputStream1=new AutoCloseInputStream(inputStream);
+//            System.out.println("Request contains a request body.");
+//            requestContext.setEntityStream(inputStream1);
+
+            // new data
+
+            ByteArrayOutputStream out = new ByteArrayOutputStream();
+            InputStream in = requestContext.getEntityStream();
+            final StringBuilder b = new StringBuilder();
+
+            if (in.available() > 0) {
+                ReaderWriter.writeTo(in, out);
+
+                byte[] requestEntity = out.toByteArray();
+                String requestBody = readInputStream(new ByteArrayInputStream(requestEntity));
+                requestContext.setProperty("body", requestBody);
+                requestContext.setEntityStream(new ByteArrayInputStream(requestEntity));
+            }
         } else if (!requestContext.getUriInfo().getQueryParameters().isEmpty()) {   // Check if the request has query parameters
             String mapJson = convertMapToJson(requestContext.getUriInfo().getQueryParameters());
             requestContext.setProperty("body", mapJson);
